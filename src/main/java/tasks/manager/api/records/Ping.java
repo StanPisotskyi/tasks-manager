@@ -1,4 +1,4 @@
-package tasks.manager.api.dto;
+package tasks.manager.api.records;
 
 public record Ping(Boolean status) {
 }
