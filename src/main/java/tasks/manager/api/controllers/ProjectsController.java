@@ -3,10 +3,8 @@ package tasks.manager.api.controllers;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import tasks.manager.api.entities.Project;
 import tasks.manager.api.factories.ProjectRecordFactory;
 import tasks.manager.api.records.ProjectRecord;
 import tasks.manager.api.requests.ProjectRequest;
@@ -24,5 +22,11 @@ public class ProjectsController {
     @PreAuthorize("hasRole('ADMIN')")
     public ProjectRecord create(@RequestBody @Valid ProjectRequest request) {
         return this.projectRecordFactory.create(this.projectService.create(request));
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ProjectRecord update(@PathVariable("id") Project project, @RequestBody @Valid ProjectRequest request) {
+        return this.projectRecordFactory.create(this.projectService.update(project, request));
     }
 }

@@ -1,6 +1,7 @@
 package tasks.manager.api.services;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import tasks.manager.api.entities.Project;
 import tasks.manager.api.entities.enums.Visibility;
@@ -33,6 +34,12 @@ public class ProjectService {
         if (repository.existsByAlias(project.getAlias())) {
             throw new RuntimeException("Project with such alias already exists");
         }
+
+        return save(project);
+    }
+
+    public Project update(Project project, ProjectRequest request) {
+        BeanUtils.copyProperties(request, project, "id", "createdBy", "createdAt");
 
         return save(project);
     }
