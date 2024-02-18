@@ -25,7 +25,7 @@ public class ProjectService {
         Project project = Project.builder()
                 .title(request.getTitle())
                 .alias(request.getAlias())
-                .status(Visibility.VISIBLE)
+                .status(request.getStatus())
                 .createdAt(new Date())
                 .createdBy(this.userService.getCurrentUser())
                 .build();
