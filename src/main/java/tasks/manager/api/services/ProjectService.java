@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import tasks.manager.api.entities.Project;
-import tasks.manager.api.entities.enums.Visibility;
 import tasks.manager.api.repositories.ProjectRepository;
 import tasks.manager.api.requests.ProjectRequest;
 import tasks.manager.api.security.UserService;
@@ -42,5 +41,9 @@ public class ProjectService {
         BeanUtils.copyProperties(request, project, "id", "createdBy", "createdAt");
 
         return save(project);
+    }
+
+    public Iterable<Project> getAll() {
+        return this.repository.findAll();
     }
 }

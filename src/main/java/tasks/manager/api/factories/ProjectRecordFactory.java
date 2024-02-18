@@ -5,6 +5,9 @@ import org.springframework.stereotype.Service;
 import tasks.manager.api.entities.Project;
 import tasks.manager.api.records.ProjectRecord;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ProjectRecordFactory {
@@ -19,5 +22,15 @@ public class ProjectRecordFactory {
                 project.getCreatedAt(),
                 this.userRecordFactory.create(project.getCreatedBy())
         );
+    }
+
+    public List<ProjectRecord> createList(Iterable<Project> projects) {
+        List<ProjectRecord> res = new ArrayList<>();
+
+        for (Project project : projects) {
+            res.add(this.create(project));
+        }
+
+        return res;
     }
 }

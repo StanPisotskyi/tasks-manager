@@ -10,6 +10,8 @@ import tasks.manager.api.records.ProjectRecord;
 import tasks.manager.api.requests.ProjectRequest;
 import tasks.manager.api.services.ProjectService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/projects")
 @RequiredArgsConstructor
@@ -17,6 +19,16 @@ public class ProjectsController {
 
     private final ProjectService projectService;
     private final ProjectRecordFactory projectRecordFactory;
+
+    @GetMapping("")
+    public List<ProjectRecord> getAll() {
+        return this.projectRecordFactory.createList(this.projectService.getAll());
+    }
+
+    @GetMapping("/{id}")
+    public ProjectRecord getOne(@PathVariable("id") Project project) {
+        return this.projectRecordFactory.create(project);
+    }
 
     @PostMapping("")
     @PreAuthorize("hasRole('ADMIN')")
