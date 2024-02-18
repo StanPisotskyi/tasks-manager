@@ -1,4 +1,4 @@
-package tasks.manager.api.entities.security;
+package tasks.manager.api.entities.enums;
 
 public enum Role {
     ROLE_USER,

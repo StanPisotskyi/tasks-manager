@@ -6,7 +6,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import tasks.manager.api.entities.User;
-import tasks.manager.api.entities.security.Role;
+import tasks.manager.api.entities.enums.Role;
 import tasks.manager.api.requests.LoginRequest;
 import tasks.manager.api.requests.RegisterRequest;
 import tasks.manager.api.responses.JwtAuthenticationResponse;

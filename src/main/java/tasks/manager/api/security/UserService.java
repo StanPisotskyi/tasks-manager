@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import tasks.manager.api.entities.User;
-import tasks.manager.api.entities.security.Role;
+import tasks.manager.api.entities.enums.Role;
 import tasks.manager.api.repositories.UserRepository;
 
 @Service
