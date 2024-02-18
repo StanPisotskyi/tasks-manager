@@ -5,6 +5,7 @@ import lombok.*;
 import tasks.manager.api.entities.enums.Visibility;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Builder
@@ -38,4 +39,7 @@ public class Project {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private Visibility status;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
+    private List<Task> tasks;
 }

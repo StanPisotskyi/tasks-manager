@@ -8,7 +8,9 @@ import tasks.manager.api.repositories.ProjectRepository;
 import tasks.manager.api.requests.ProjectRequest;
 import tasks.manager.api.security.UserService;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -45,5 +47,18 @@ public class ProjectService {
 
     public Iterable<Project> getAll() {
         return this.repository.findAll();
+    }
+
+    public Project findOneById(Long id) {
+        if (!this.repository.existsById(id)) {
+            throw new RuntimeException(STR."Project with id[\{id}] is not found");
+        }
+
+        Optional<Project> findByRes = this.repository.findById(id);
+
+        ArrayList<Project> res = new ArrayList<>();
+        findByRes.ifPresent(res::add);
+
+        return res.getFirst();
     }
 }

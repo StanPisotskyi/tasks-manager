@@ -9,6 +9,9 @@ import tasks.manager.api.entities.User;
 import tasks.manager.api.entities.enums.Role;
 import tasks.manager.api.repositories.UserRepository;
 
+import java.util.ArrayList;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -51,5 +54,18 @@ public class UserService {
         var user = getCurrentUser();
         user.setRole(Role.ROLE_ADMIN);
         save(user);
+    }
+
+    public User findOneById(Long id) {
+        if (!this.repository.existsById(id)) {
+            throw new RuntimeException(STR."User with id[\{id}] is not found");
+        }
+
+        Optional<User> findByRes = this.repository.findById(id);
+
+        ArrayList<User> res = new ArrayList<>();
+        findByRes.ifPresent(res::add);
+
+        return res.getFirst();
     }
 }
