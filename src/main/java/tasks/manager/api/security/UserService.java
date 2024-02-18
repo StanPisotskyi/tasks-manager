@@ -20,7 +20,6 @@ public class UserService {
 
     public User create(User user) {
         if (repository.existsByUsername(user.getUsername())) {
-            // Заменить на свои исключения
             throw new RuntimeException("User with such username already exists");
         }
 

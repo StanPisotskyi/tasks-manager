@@ -3,7 +3,7 @@ package tasks.manager.api.controllers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import tasks.manager.api.entities.User;
+import tasks.manager.api.factories.UserRecordFactory;
 import tasks.manager.api.records.UserRecord;
 import tasks.manager.api.security.UserService;
 
@@ -11,10 +11,10 @@ import tasks.manager.api.security.UserService;
 @RequiredArgsConstructor
 public class ProfileController {
     private final UserService userService;
+    private final UserRecordFactory userRecordFactory;
 
     @GetMapping("/me")
     public UserRecord me() {
-        User user = this.userService.getCurrentUser();
-        return new UserRecord(user.getId(), user.getFirstName(), user.getLastName(), user.getUsername(), user.getEmail());
+        return this.userRecordFactory.create(this.userService.getCurrentUser());
     }
 }

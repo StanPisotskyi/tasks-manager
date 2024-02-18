@@ -15,7 +15,7 @@ public class AuthController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/register")
-    public JwtAuthenticationResponse register(@RequestBody RegisterRequest request) {
+    public JwtAuthenticationResponse register(@RequestBody @Valid RegisterRequest request) {
         return authenticationService.register(request);
     }
 

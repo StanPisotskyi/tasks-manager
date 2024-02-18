@@ -21,7 +21,7 @@ public class AuthenticationService {
 
     public JwtAuthenticationResponse register(RegisterRequest request) {
 
-        var user = User.builder()
+        User user = User.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .username(request.getUsername())
