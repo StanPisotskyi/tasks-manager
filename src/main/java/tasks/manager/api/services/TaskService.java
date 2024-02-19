@@ -1,11 +1,11 @@
 package tasks.manager.api.services;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import tasks.manager.api.entities.Task;
 import tasks.manager.api.entities.User;
 import tasks.manager.api.repositories.TaskRepository;
-import tasks.manager.api.repositories.UserRepository;
 import tasks.manager.api.requests.TaskRequest;
 import tasks.manager.api.security.UserService;
 
@@ -40,5 +40,29 @@ public class TaskService {
                 .build();
 
         return save(task);
+    }
+
+    public Task update(Task task, TaskRequest request) {
+        User assignedTo = null;
+
+        if (request.getAssignedToId() != null) {
+            assignedTo = this.userService.findOneById(request.getAssignedToId());
+        }
+
+        task.setUpdatedAt(new Date());
+        task.setAssignedTo(assignedTo);
+        task.setProject(this.projectService.findOneById(request.getProjectId()));
+
+        BeanUtils.copyProperties(request, task, "id", "createdBy", "createdAt", "updatedAt", "assignedTo", "project");
+
+        return save(task);
+    }
+
+    public void deleteById(Task task) {
+        if (!this.taskRepository.existsById(task.getId())) {
+            throw new RuntimeException(STR."Task with id[\{task.getId()}] is not found");
+        }
+
+        this.taskRepository.deleteById(task.getId());
     }
 }
