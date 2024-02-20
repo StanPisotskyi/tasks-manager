@@ -10,6 +10,7 @@ import tasks.manager.api.requests.TaskRequest;
 import tasks.manager.api.security.UserService;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +18,9 @@ public class TaskService {
     private final UserService userService;
     private final ProjectService projectService;
     private final TaskRepository taskRepository;
+
+    private final int limit = 50;
+    private final int offset = 0;
 
     public Task save(Task task) {
         return this.taskRepository.save(task);
@@ -64,5 +68,18 @@ public class TaskService {
         }
 
         this.taskRepository.deleteById(task.getId());
+    }
+
+    public List<Task> getList(Integer limit, Integer offset) {
+
+        if (offset == null || offset < 0) {
+            offset = this.offset;
+        }
+
+        if (limit == null || limit < 1) {
+            limit = this.limit;
+        }
+
+        return this.taskRepository.getList(limit, offset);
     }
 }

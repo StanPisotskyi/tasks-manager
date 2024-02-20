@@ -6,9 +6,12 @@ import org.springframework.web.bind.annotation.*;
 import tasks.manager.api.entities.Task;
 import tasks.manager.api.factories.TaskRecordFactory;
 import tasks.manager.api.records.DefaultRecord;
+import tasks.manager.api.records.TaskListRecord;
 import tasks.manager.api.records.TaskRecord;
 import tasks.manager.api.requests.TaskRequest;
 import tasks.manager.api.services.TaskService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/tasks")
@@ -17,6 +20,11 @@ public class TasksController {
 
     private final TaskRecordFactory taskRecordFactory;
     private final TaskService taskService;
+
+    @GetMapping("")
+    public List<TaskListRecord> getList(@RequestParam(required = false) Integer limit, @RequestParam(required = false) Integer offset) {
+        return this.taskRecordFactory.create(this.taskService.getList(limit, offset));
+    }
 
     @GetMapping("/{id}")
     public TaskRecord getOne(@PathVariable("id") Task task) {
