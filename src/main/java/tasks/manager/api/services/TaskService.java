@@ -18,6 +18,7 @@ import tasks.manager.api.specifications.TaskSpecification;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -77,7 +78,7 @@ public class TaskService {
         this.taskRepository.deleteById(task.getId());
     }
 
-    public List<Task> getList(List<String> statuses, Integer limit, Integer page) {
+    public List<Task> getList(List<String> statuses, Long project, Long user, Integer limit, Integer page) {
 
         if (page == null || page < 0) {
             page = PAGE;
@@ -87,7 +88,18 @@ public class TaskService {
             limit = LIMIT;
         }
 
-        Specification<Task> filters = Specification.where(CollectionUtils.isEmpty(statuses) ? null : TaskSpecification.setStatuses(statuses));
+        if (project == null) {
+            project = 0L;
+        }
+
+        if (user == null) {
+            user = 0L;
+        }
+
+        Specification<Task> filters = Specification
+                .where(CollectionUtils.isEmpty(statuses) ? null : TaskSpecification.setStatuses(statuses))
+                .and(project == 0 ? null : TaskSpecification.setProject(project))
+                .and(user == 0 ? null : TaskSpecification.setUser(user));
         Pageable pagination = PageRequest.of(page, limit, Sort.by("createdAt").descending());
 
         return this.taskRepository.findAll(filters, pagination).getContent();
