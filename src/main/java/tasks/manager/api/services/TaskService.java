@@ -1,13 +1,19 @@
 package tasks.manager.api.services;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import tasks.manager.api.entities.Task;
 import tasks.manager.api.entities.User;
 import tasks.manager.api.repositories.TaskRepository;
 import tasks.manager.api.requests.TaskRequest;
 import tasks.manager.api.security.UserService;
+import tasks.manager.api.specifications.TaskSpecification;
 
 import java.util.Date;
 import java.util.List;
@@ -20,7 +26,7 @@ public class TaskService {
     private final TaskRepository taskRepository;
 
     private final int limit = 50;
-    private final int offset = 0;
+    private final int page = 0;
 
     public Task save(Task task) {
         return this.taskRepository.save(task);
@@ -70,16 +76,19 @@ public class TaskService {
         this.taskRepository.deleteById(task.getId());
     }
 
-    public List<Task> getList(Integer limit, Integer offset) {
+    public List<Task> getList(String status, Integer limit, Integer page) {
 
-        if (offset == null || offset < 0) {
-            offset = this.offset;
+        if (page == null || page < 0) {
+            page = this.page;
         }
 
         if (limit == null || limit < 1) {
             limit = this.limit;
         }
 
-        return this.taskRepository.getList(limit, offset);
+        Specification<Task> filters = Specification.where(StringUtils.isBlank(status) ? null : TaskSpecification.setStatus(status.toUpperCase()));
+        Pageable pagination = PageRequest.of(page, limit, Sort.by("createdAt").descending());
+
+        return this.taskRepository.findAll(filters, pagination).getContent();
     }
 }
