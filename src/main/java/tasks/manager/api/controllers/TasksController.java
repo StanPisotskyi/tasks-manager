@@ -22,8 +22,8 @@ public class TasksController {
     private final TaskService taskService;
 
     @GetMapping("")
-    public List<TaskListRecord> getList(@RequestParam(required = false) Integer limit, @RequestParam(required = false) Integer page, @RequestParam(required = false) String status) {
-        return this.taskRecordFactory.create(this.taskService.getList(status, limit, page));
+    public List<TaskListRecord> getList(@RequestParam(required = false) Integer limit, @RequestParam(required = false) Integer page, @RequestParam(required = false) List<String> statuses) {
+        return this.taskRecordFactory.create(this.taskService.getList(statuses, limit, page));
     }
 
     @GetMapping("/{id}")

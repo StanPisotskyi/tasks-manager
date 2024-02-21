@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import tasks.manager.api.entities.Task;
 import tasks.manager.api.entities.User;
 import tasks.manager.api.repositories.TaskRepository;
@@ -25,8 +26,8 @@ public class TaskService {
     private final ProjectService projectService;
     private final TaskRepository taskRepository;
 
-    private final int limit = 50;
-    private final int page = 0;
+    public static final int LIMIT = 50;
+    public static final int PAGE = 0;
 
     public Task save(Task task) {
         return this.taskRepository.save(task);
@@ -76,17 +77,17 @@ public class TaskService {
         this.taskRepository.deleteById(task.getId());
     }
 
-    public List<Task> getList(String status, Integer limit, Integer page) {
+    public List<Task> getList(List<String> statuses, Integer limit, Integer page) {
 
         if (page == null || page < 0) {
-            page = this.page;
+            page = PAGE;
         }
 
         if (limit == null || limit < 1) {
-            limit = this.limit;
+            limit = LIMIT;
         }
 
-        Specification<Task> filters = Specification.where(StringUtils.isBlank(status) ? null : TaskSpecification.setStatus(status.toUpperCase()));
+        Specification<Task> filters = Specification.where(CollectionUtils.isEmpty(statuses) ? null : TaskSpecification.setStatuses(statuses));
         Pageable pagination = PageRequest.of(page, limit, Sort.by("createdAt").descending());
 
         return this.taskRepository.findAll(filters, pagination).getContent();
