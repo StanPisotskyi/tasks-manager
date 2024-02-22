@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import tasks.manager.api.entities.Task;
 import tasks.manager.api.factories.TaskRecordFactory;
+import tasks.manager.api.records.CountRecord;
 import tasks.manager.api.records.DefaultRecord;
 import tasks.manager.api.records.TaskListRecord;
 import tasks.manager.api.records.TaskRecord;
@@ -52,5 +53,10 @@ public class TasksController {
         this.taskService.deleteById(task);
 
         return new DefaultRecord(true, "Task has been deleted");
+    }
+
+    @GetMapping("/count")
+    public CountRecord count() {
+        return new CountRecord(this.taskService.getTasksTotalAmount());
     }
 }

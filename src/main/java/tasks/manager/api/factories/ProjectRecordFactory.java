@@ -24,7 +24,7 @@ public class ProjectRecordFactory {
         );
     }
 
-    public List<ProjectRecord> createList(Iterable<Project> projects) {
+    public List<ProjectRecord> create(Iterable<Project> projects) {
         List<ProjectRecord> res = new ArrayList<>();
 
         for (Project project : projects) {

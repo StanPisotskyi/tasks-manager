@@ -5,6 +5,7 @@ import lombok.*;
 import tasks.manager.api.entities.enums.TaskStatus;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Builder
@@ -50,4 +51,7 @@ public class Task {
     @ManyToOne
     @JoinColumn(name="project_id", referencedColumnName = "id", nullable = false)
     private Project project;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "task")
+    private List<Comment> comments;
 }

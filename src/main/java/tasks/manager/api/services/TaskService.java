@@ -104,4 +104,8 @@ public class TaskService {
 
         return this.taskRepository.findAll(filters, pagination).getContent();
     }
+
+    public Long getTasksTotalAmount() {
+        return this.taskRepository.count();
+    }
 }

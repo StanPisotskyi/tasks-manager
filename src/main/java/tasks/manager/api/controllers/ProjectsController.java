@@ -22,7 +22,7 @@ public class ProjectsController {
 
     @GetMapping("")
     public List<ProjectRecord> getAll() {
-        return this.projectRecordFactory.createList(this.projectService.getAll());
+        return this.projectRecordFactory.create(this.projectService.getAll());
     }
 
     @GetMapping("/{id}")

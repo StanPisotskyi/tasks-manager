@@ -10,6 +10,7 @@ import tasks.manager.api.entities.enums.Role;
 import tasks.manager.api.repositories.UserRepository;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -67,5 +68,9 @@ public class UserService {
         findByRes.ifPresent(res::add);
 
         return res.getFirst();
+    }
+
+    public List<User> getAll() {
+        return this.repository.findAll();
     }
 }
