@@ -56,7 +56,11 @@ public class TasksController {
     }
 
     @GetMapping("/count")
-    public CountRecord count() {
-        return new CountRecord(this.taskService.getTasksTotalAmount());
+    public CountRecord count(
+            @RequestParam(required = false) List<String> statuses,
+            @RequestParam(required = false) Long project,
+            @RequestParam(required = false) Long user
+    ) {
+        return new CountRecord(this.taskService.getTasksTotalAmount(statuses, project, user));
     }
 }

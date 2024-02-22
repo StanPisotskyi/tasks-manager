@@ -105,7 +105,20 @@ public class TaskService {
         return this.taskRepository.findAll(filters, pagination).getContent();
     }
 
-    public Long getTasksTotalAmount() {
-        return this.taskRepository.count();
+    public Long getTasksTotalAmount(List<String> statuses, Long project, Long user) {
+        if (project == null) {
+            project = 0L;
+        }
+
+        if (user == null) {
+            user = 0L;
+        }
+
+        Specification<Task> filters = Specification
+                .where(CollectionUtils.isEmpty(statuses) ? null : TaskSpecification.setStatuses(statuses))
+                .and(project == 0 ? null : TaskSpecification.setProject(project))
+                .and(user == 0 ? null : TaskSpecification.setUser(user));
+
+        return this.taskRepository.count(filters);
     }
 }
