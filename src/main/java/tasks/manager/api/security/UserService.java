@@ -1,6 +1,7 @@
 package tasks.manager.api.security;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -8,9 +9,12 @@ import org.springframework.stereotype.Service;
 import tasks.manager.api.entities.User;
 import tasks.manager.api.entities.enums.Role;
 import tasks.manager.api.repositories.UserRepository;
+import tasks.manager.api.requests.AccountEditRequest;
+import tasks.manager.api.requests.UserEditRequest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -45,8 +49,7 @@ public class UserService {
     }
 
     public User getCurrentUser() {
-        // Получение имени пользователя из контекста Spring Security
-        var username = SecurityContextHolder.getContext().getAuthentication().getName();
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return getByUsername(username);
     }
 
@@ -72,5 +75,31 @@ public class UserService {
 
     public List<User> getAll() {
         return this.repository.findAll();
+    }
+
+    public User update(AccountEditRequest request) {
+        if (repository.existsByUsername(request.getUsername())) {
+            throw new RuntimeException("User with such username already exists");
+        }
+
+        User user = this.getCurrentUser();
+
+        BeanUtils.copyProperties(request, this.getCurrentUser(), "id", "email", "password", "role");
+
+        return save(user);
+    }
+
+    public User update(UserEditRequest request, User user) {
+        if (!Objects.equals(user.getUsername(), request.getUsername()) && repository.existsByUsername(request.getUsername())) {
+            throw new RuntimeException("User with such username already exists");
+        }
+
+        if (!Objects.equals(user.getEmail(), request.getEmail()) && repository.existsByEmail(request.getEmail())) {
+            throw new RuntimeException("User with such email already exists");
+        }
+
+        BeanUtils.copyProperties(request, user, "id", "password");
+
+        return save(user);
     }
 }

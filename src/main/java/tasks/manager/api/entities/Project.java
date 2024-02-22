@@ -2,6 +2,8 @@ package tasks.manager.api.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import tasks.manager.api.entities.enums.Visibility;
 
 import java.util.Date;
@@ -30,6 +32,7 @@ public class Project {
 
     @ManyToOne
     @JoinColumn(name="created_by", referencedColumnName = "id")
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     private User createdBy;
 
     @Column(name = "created_at", columnDefinition="DATE")

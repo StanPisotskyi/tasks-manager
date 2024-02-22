@@ -4,9 +4,10 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import tasks.manager.api.entities.enums.Role;
 
 @Data
-public class RegisterRequest {
+public class UserEditRequest {
     @Size(min = 2, max = 50, message = "First name has to contain more than 2 and less than 50 characters")
     @NotBlank(message = "First name cannot be empty")
     private String firstName;
@@ -24,7 +25,11 @@ public class RegisterRequest {
     @Email(message = "Email is invalid")
     private String email;
 
-    @Size(max = 255, message = "Password has to contain less than 256 characters")
-    @NotBlank(message = "Password cannot be empty")
-    private String password;
+    @Size(min = 1, message = "Role has to contain more than 1 character")
+    @NotBlank(message = "Role cannot be empty")
+    private String role;
+
+    public Role getRole() {
+        return Role.findByRole(this.role);
+    }
 }

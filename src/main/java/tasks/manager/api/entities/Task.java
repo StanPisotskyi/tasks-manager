@@ -2,6 +2,8 @@ package tasks.manager.api.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import tasks.manager.api.entities.enums.TaskStatus;
 
 import java.util.Date;
@@ -42,14 +44,17 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name="created_by", referencedColumnName = "id")
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     private User createdBy;
 
     @ManyToOne
     @JoinColumn(name="assignet_to", referencedColumnName = "id")
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     private User assignedTo;
 
     @ManyToOne
     @JoinColumn(name="project_id", referencedColumnName = "id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Project project;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "task")

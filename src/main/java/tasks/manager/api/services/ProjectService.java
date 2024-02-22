@@ -61,4 +61,12 @@ public class ProjectService {
 
         return res.getFirst();
     }
+
+    public void deleteById(Project project) {
+        if (!this.repository.existsById(project.getId())) {
+            throw new RuntimeException(STR."Project with id[\{project.getId()}] is not found");
+        }
+
+        this.repository.deleteById(project.getId());
+    }
 }

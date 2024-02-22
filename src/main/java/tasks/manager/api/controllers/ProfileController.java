@@ -1,15 +1,19 @@
 package tasks.manager.api.controllers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import tasks.manager.api.entities.enums.TaskStatus;
 import tasks.manager.api.factories.TaskRecordFactory;
 import tasks.manager.api.factories.UserRecordFactory;
+import tasks.manager.api.records.CountRecord;
+import tasks.manager.api.records.DefaultRecord;
 import tasks.manager.api.records.TaskListRecord;
 import tasks.manager.api.records.UserRecord;
+import tasks.manager.api.requests.AccountEditRequest;
+import tasks.manager.api.requests.PasswordRequest;
+import tasks.manager.api.responses.JwtAuthenticationResponse;
+import tasks.manager.api.security.AuthenticationService;
 import tasks.manager.api.security.UserService;
 import tasks.manager.api.services.TaskService;
 
@@ -24,10 +28,23 @@ public class ProfileController {
     private final UserRecordFactory userRecordFactory;
     private final TaskRecordFactory taskRecordFactory;
     private final TaskService taskService;
+    private final AuthenticationService authenticationService;
 
     @GetMapping("/me")
     public UserRecord me() {
         return this.userRecordFactory.create(this.userService.getCurrentUser());
+    }
+
+    @PutMapping("/me")
+    public JwtAuthenticationResponse me(@RequestBody @Valid AccountEditRequest request) {
+        return this.authenticationService.update(request);
+    }
+
+    @PutMapping("/password")
+    public DefaultRecord password(@RequestBody @Valid PasswordRequest request) {
+        this.authenticationService.updatePassword(this.userService.getCurrentUser(), request);
+
+        return new DefaultRecord(true, "Password has been changed");
     }
 
     @GetMapping("/tasks")
@@ -47,6 +64,20 @@ public class ProfileController {
                         this.userService.getCurrentUser().getId(),
                         limit,
                         page
+                )
+        );
+    }
+
+    @GetMapping("/tasks/count")
+    public CountRecord tasksCount(
+            @RequestParam(required = false) List<String> statuses,
+            @RequestParam(required = false) Long project
+    ) {
+        return new CountRecord(
+                this.taskService.getTasksTotalAmount(
+                        statuses,
+                        project,
+                        this.userService.getCurrentUser().getId()
                 )
         );
     }

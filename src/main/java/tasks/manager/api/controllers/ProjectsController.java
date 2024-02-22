@@ -6,6 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tasks.manager.api.entities.Project;
 import tasks.manager.api.factories.ProjectRecordFactory;
+import tasks.manager.api.records.DefaultRecord;
 import tasks.manager.api.records.ProjectRecord;
 import tasks.manager.api.requests.ProjectRequest;
 import tasks.manager.api.services.ProjectService;
@@ -40,5 +41,13 @@ public class ProjectsController {
     @PreAuthorize("hasRole('ADMIN')")
     public ProjectRecord update(@PathVariable("id") Project project, @RequestBody @Valid ProjectRequest request) {
         return this.projectRecordFactory.create(this.projectService.update(project, request));
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public DefaultRecord delete(@PathVariable("id") Project project) {
+        this.projectService.deleteById(project);
+
+        return new DefaultRecord(true, "Project has been deleted");
     }
 }
