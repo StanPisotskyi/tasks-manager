@@ -14,6 +14,7 @@ import tasks.manager.api.requests.AccountEditRequest;
 import tasks.manager.api.requests.PasswordRequest;
 import tasks.manager.api.responses.JwtAuthenticationResponse;
 import tasks.manager.api.security.AuthenticationService;
+import tasks.manager.api.security.PasswordService;
 import tasks.manager.api.security.UserService;
 import tasks.manager.api.services.TaskService;
 
@@ -29,6 +30,7 @@ public class ProfileController {
     private final TaskRecordFactory taskRecordFactory;
     private final TaskService taskService;
     private final AuthenticationService authenticationService;
+    private final PasswordService passwordService;
 
     @GetMapping("/me")
     public UserRecord me() {
@@ -42,7 +44,7 @@ public class ProfileController {
 
     @PutMapping("/password")
     public DefaultRecord password(@RequestBody @Valid PasswordRequest request) {
-        this.authenticationService.updatePassword(this.userService.getCurrentUser(), request);
+        this.passwordService.update(this.userService.getCurrentUser(), request);
 
         return new DefaultRecord(true, "Password has been changed");
     }

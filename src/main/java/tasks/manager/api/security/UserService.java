@@ -2,6 +2,7 @@ package tasks.manager.api.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,6 +12,7 @@ import tasks.manager.api.entities.enums.Role;
 import tasks.manager.api.repositories.UserRepository;
 import tasks.manager.api.requests.AccountEditRequest;
 import tasks.manager.api.requests.UserEditRequest;
+import tasks.manager.api.specifications.UserSpecification;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,5 +103,17 @@ public class UserService {
         BeanUtils.copyProperties(request, user, "id", "password");
 
         return save(user);
+    }
+
+    public void delete(User user) {
+        Specification<User> filters = Specification.where(UserSpecification.checkIsAdmin());
+
+        long count = this.repository.count(filters);
+
+        if (count == 1) {
+            throw new RuntimeException("There is only one admin left");
+        }
+
+        this.repository.deleteById(user.getId());
     }
 }

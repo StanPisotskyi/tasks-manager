@@ -19,21 +19,12 @@ import tasks.manager.api.responses.JwtAuthenticationResponse;
 public class AuthenticationService {
     private final UserService userService;
     private final JwtService jwtService;
-    private final PasswordEncoder passwordEncoder;
+    private final UserRegisterService userRegisterService;
     private final AuthenticationManager authenticationManager;
 
     public JwtAuthenticationResponse register(RegisterRequest request) {
 
-        User user = User.builder()
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .username(request.getUsername())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.ROLE_USER)
-                .build();
-
-        userService.create(user);
+        User user = this.userRegisterService.create(request);
 
         String jwt = jwtService.generateToken(user);
         return new JwtAuthenticationResponse(jwt);
@@ -58,15 +49,5 @@ public class AuthenticationService {
 
         String jwt = jwtService.generateToken(user);
         return new JwtAuthenticationResponse(jwt);
-    }
-
-    public void updatePassword(User user, PasswordRequest request) {
-        if (!request.equals()) {
-            throw new RuntimeException("Passwords are not equal");
-        }
-
-        user.setPassword(this.passwordEncoder.encode(request.getPassword()));
-
-        this.userService.save(user);
     }
 }
