@@ -55,7 +55,7 @@ public class CommentService {
 
     public Comment findOneById(Long id) {
         if (!this.commentRepository.existsById(id)) {
-            throw new RuntimeException(STR."Comment with id[\{id}] is not found");
+            throw new RuntimeException("Comment with id[" + id + "] is not found");
         }
 
         Optional<Comment> findByRes = this.commentRepository.findById(id);
@@ -80,7 +80,7 @@ public class CommentService {
 
     public void delete (Comment comment) {
         if (!this.commentRepository.existsById(comment.getId())) {
-            throw new RuntimeException(STR."Comment with id[\{comment.getId()}] is not found");
+            throw new RuntimeException("Comment with id[" + comment.getId() + "] is not found");
         }
 
         if (!this.hasAccess(comment)) {

@@ -64,7 +64,7 @@ public class UserService {
 
     public User findOneById(Long id) {
         if (!this.repository.existsById(id)) {
-            throw new RuntimeException(STR."User with id[\{id}] is not found");
+            throw new RuntimeException("User with id[" + id + "] is not found");
         }
 
         Optional<User> findByRes = this.repository.findById(id);

@@ -51,7 +51,7 @@ public class ProjectService {
 
     public Project findOneById(Long id) {
         if (!this.repository.existsById(id)) {
-            throw new RuntimeException(STR."Project with id[\{id}] is not found");
+            throw new RuntimeException("Project with id[" + id + "] is not found");
         }
 
         Optional<Project> findByRes = this.repository.findById(id);
@@ -64,7 +64,7 @@ public class ProjectService {
 
     public void deleteById(Project project) {
         if (!this.repository.existsById(project.getId())) {
-            throw new RuntimeException(STR."Project with id[\{project.getId()}] is not found");
+            throw new RuntimeException("Project with id[" + project.getId() + "] is not found");
         }
 
         this.repository.deleteById(project.getId());

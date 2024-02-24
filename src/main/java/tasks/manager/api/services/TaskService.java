@@ -72,7 +72,7 @@ public class TaskService {
 
     public void deleteById(Task task) {
         if (!this.taskRepository.existsById(task.getId())) {
-            throw new RuntimeException(STR."Task with id[\{task.getId()}] is not found");
+            throw new RuntimeException("Task with id[" + task.getId() + "] is not found");
         }
 
         this.taskRepository.deleteById(task.getId());
@@ -124,7 +124,7 @@ public class TaskService {
 
     public Task findOneById(Long id) {
         if (!this.taskRepository.existsById(id)) {
-            throw new RuntimeException(STR."Task with id[\{id}] is not found");
+            throw new RuntimeException("Task with id[" + id + "] is not found");
         }
 
         Optional<Task> findByRes = this.taskRepository.findById(id);
