@@ -1,7 +1,6 @@
 package tasks.manager.api.services;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +15,7 @@ import tasks.manager.api.requests.TaskRequest;
 import tasks.manager.api.security.UserService;
 import tasks.manager.api.specifications.TaskSpecification;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -120,5 +120,18 @@ public class TaskService {
                 .and(user == 0 ? null : TaskSpecification.setUser(user));
 
         return this.taskRepository.count(filters);
+    }
+
+    public Task findOneById(Long id) {
+        if (!this.taskRepository.existsById(id)) {
+            throw new RuntimeException(STR."Task with id[\{id}] is not found");
+        }
+
+        Optional<Task> findByRes = this.taskRepository.findById(id);
+
+        ArrayList<Task> res = new ArrayList<>();
+        findByRes.ifPresent(res::add);
+
+        return res.getFirst();
     }
 }
