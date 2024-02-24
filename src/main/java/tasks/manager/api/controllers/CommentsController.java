@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import tasks.manager.api.entities.Comment;
+import tasks.manager.api.entities.Task;
 import tasks.manager.api.factories.CommentRecordFactory;
 import tasks.manager.api.records.CommentRecord;
 import tasks.manager.api.records.DefaultRecord;
@@ -12,12 +13,19 @@ import tasks.manager.api.requests.CommentEditRequest;
 import tasks.manager.api.requests.CommentRequest;
 import tasks.manager.api.services.CommentService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/comments")
 @RequiredArgsConstructor
 public class CommentsController {
     private final CommentService commentService;
     private final CommentRecordFactory commentRecordFactory;
+
+    @GetMapping("/{id}/task")
+    public List<CommentRecord> getAll(@PathVariable("id") Task task) {
+        return this.commentRecordFactory.create(this.commentService.getListByTask(task));
+    }
 
     @PostMapping("")
     public CommentRecord create(@RequestBody @Valid CommentRequest request) {

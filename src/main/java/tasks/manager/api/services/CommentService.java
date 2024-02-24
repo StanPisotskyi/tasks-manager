@@ -2,18 +2,18 @@ package tasks.manager.api.services;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import tasks.manager.api.entities.Comment;
+import tasks.manager.api.entities.Task;
 import tasks.manager.api.repositories.CommentRepository;
 import tasks.manager.api.requests.AnswerRequest;
 import tasks.manager.api.requests.CommentEditRequest;
 import tasks.manager.api.requests.CommentRequest;
 import tasks.manager.api.security.UserService;
+import tasks.manager.api.specifications.CommentSpecification;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +21,8 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final TaskService taskService;
     private final UserService userService;
+
+    public static Map<Long, List<Comment>> commentsByParents = new HashMap<>();
 
     public Comment save(Comment comment) {
         return this.commentRepository.save(comment);
@@ -86,6 +88,41 @@ public class CommentService {
         }
 
         this.commentRepository.deleteById(comment.getId());
+    }
+
+    public List<Comment> getListByTask(Task task) {
+        commentsByParents.clear();
+
+        Specification<Comment> filters = Specification
+                .where(CommentSpecification.setTask(task));
+
+        List<Comment> comments = this.commentRepository.findAll(filters);
+        List<Comment> commentsToRemove = new ArrayList<>();
+
+        for (Comment comment : comments) {
+            if (comment.getReply() == null) {
+                continue;
+            }
+
+            Long replyId = comment.getReply().getId();
+
+            if (!commentsByParents.containsKey(replyId)) {
+                commentsByParents.put(comment.getReply().getId(), new ArrayList<>());
+            }
+
+            List<Comment> children = commentsByParents.get(replyId);
+            children.add(comment);
+
+            commentsByParents.put(comment.getReply().getId(), children);
+
+            commentsToRemove.add(comment);
+        }
+
+        for (Comment commentToRemove : commentsToRemove) {
+            comments.remove(commentToRemove);
+        }
+
+        return comments;
     }
 
     private boolean hasAccess(Comment comment) {
