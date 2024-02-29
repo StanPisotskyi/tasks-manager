@@ -80,11 +80,11 @@ public class UserService {
     }
 
     public User update(AccountEditRequest request) {
-        if (repository.existsByUsername(request.getUsername())) {
+        User user = this.getCurrentUser();
+
+        if (!Objects.equals(request.getUsername(), user.getUsername()) && repository.existsByUsername(request.getUsername())) {
             throw new RuntimeException("User with such username already exists");
         }
-
-        User user = this.getCurrentUser();
 
         BeanUtils.copyProperties(request, this.getCurrentUser(), "id", "email", "password", "role");
 
