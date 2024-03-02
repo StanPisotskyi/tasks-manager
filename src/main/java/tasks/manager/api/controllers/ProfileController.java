@@ -72,9 +72,12 @@ public class ProfileController {
 
     @GetMapping("/tasks/count")
     public CountRecord tasksCount(
-            @RequestParam(required = false) List<String> statuses,
             @RequestParam(required = false) Long project
     ) {
+        List<String> statuses = new ArrayList<>();
+        statuses.add(String.valueOf(TaskStatus.NEW));
+        statuses.add(String.valueOf(TaskStatus.IN_PROGRESS));
+
         return new CountRecord(
                 this.taskService.getTasksTotalAmount(
                         statuses,
