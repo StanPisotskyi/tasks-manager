@@ -40,7 +40,7 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name="reply_id", referencedColumnName = "id")
-    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Comment reply;
 
     @ManyToOne
